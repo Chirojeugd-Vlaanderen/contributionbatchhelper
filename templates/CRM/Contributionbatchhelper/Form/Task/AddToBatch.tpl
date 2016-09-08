@@ -1,5 +1,20 @@
 {* HEADER *}
 
+{literal}
+<script type="text/javascript">
+CRM.$(function($) {
+    $("#contribution_batch_id").change(function() {
+        if (this.value) {
+            $("#batch_name").parent().parent().hide();
+        }
+        else {
+            $("#batch_name").parent().parent().show();
+        }
+    });
+});
+</script>
+{/literal}
+
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="top"}
 </div>

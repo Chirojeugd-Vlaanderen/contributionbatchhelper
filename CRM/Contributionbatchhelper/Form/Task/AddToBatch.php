@@ -16,8 +16,7 @@ class CRM_Contributionbatchhelper_Form_Task_AddToBatch extends CRM_Contribute_Fo
       'contribution_batch_id',
       ts("Add %1 contribution(s) to", array(count($this->_contributionIds))),
       $batches,
-      FALSE,
-      array('class' => 'crm-select2'));
+      TRUE);
 
     // add form elements
     $this->add(
@@ -82,5 +81,11 @@ class CRM_Contributionbatchhelper_Form_Task_AddToBatch extends CRM_Contribute_Fo
       }
     }
     return $elementNames;
+  }
+
+  public function setDefaultValues() {
+    $defaults = parent::setDefaultValues();
+    $defaults['batch_name'] = CRM_Batch_BAO_Batch::generateBatchName();
+    return $defaults;
   }
 }
