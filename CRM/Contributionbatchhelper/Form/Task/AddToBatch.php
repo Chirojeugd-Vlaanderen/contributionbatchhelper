@@ -7,16 +7,25 @@ require_once 'CRM/Core/Form.php';
  *
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
-class CRM_Contributionbatchhelper_Form_Task_AddToBatch extends CRM_Core_Form {
+class CRM_Contributionbatchhelper_Form_Task_AddToBatch extends CRM_Contribute_Form_Task {
   public function buildQuickForm() {
+
+    $batches = array('' => '- new batch -') + CRM_Contribute_PseudoConstant::batch();
+    $this->add(
+      'select',
+      'contribution_batch_id',
+      ts("Add %1 contribution(s) to", array(count($this->_contributionIds))),
+      $batches,
+      FALSE,
+      array('class' => 'crm-select2'));
 
     // add form elements
     $this->add(
-      'select', // field type
-      'favorite_color', // field name
-      'Favorite Color', // field label
-      $this->getColorOptions(), // list of options
-      TRUE // is required
+      'text', // field type
+      'batch_name', // field name
+      'New batch name', // field label
+      NULL,
+      TRUE
     );
     $this->addButtons(array(
       array(

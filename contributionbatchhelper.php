@@ -153,3 +153,20 @@ function contributionbatchhelper_civicrm_navigationMenu(&$menu) {
   ));
   _contributionbatchhelper_civix_navigationMenu($menu);
 } // */
+
+/**
+ * Implements hook_civicrm_searchTasks.
+ * 
+ * @param string $objectType
+ * @param array $tasks
+ */
+function contributionbatchhelper_civicrm_searchTasks($objectType, &$tasks) {
+  if ($objectType == 'contribution') {
+    // Add task for Membership facturatie and lidkaarten
+    $tasks['batch'] = array(
+      'title' => ts('Add to export batch'),
+      'class' => 'CRM_Contributionbatchhelper_Form_Task_AddToBatch',
+      'result' => FALSE,
+    );
+  }
+}
