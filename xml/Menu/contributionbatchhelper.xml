@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/contribute/addtobatch</path>
+    <page_callback>CRM_Contributionbatchhelper_Form_Task_AddToBatch</page_callback>
+    <title>AddToBatch</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
