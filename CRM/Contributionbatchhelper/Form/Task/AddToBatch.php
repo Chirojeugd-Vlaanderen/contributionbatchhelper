@@ -1,4 +1,21 @@
 <?php
+/*
+  be.chiro.civi.contributionbatchhelper - easy contribution batch creation.
+  Copyright (C) 2016  Chirojeugd-Vlaanderen vzw
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 require_once 'CRM/Core/Form.php';
 
@@ -16,7 +33,7 @@ class CRM_Contributionbatchhelper_Form_Task_AddToBatch extends CRM_Contribute_Fo
       'contribution_batch_id',
       ts("Add %1 contribution(s) to", array(count($this->_contributionIds))),
       $batches,
-      TRUE);
+      FALSE);
 
     // add form elements
     $this->add(
@@ -28,8 +45,8 @@ class CRM_Contributionbatchhelper_Form_Task_AddToBatch extends CRM_Contribute_Fo
     );
     $this->addButtons(array(
       array(
-        'type' => 'submit',
-        'name' => ts('Submit'),
+        'type' => 'done',
+        'name' => ts('Add to batch'),
         'isDefault' => TRUE,
       ),
     ));
@@ -40,12 +57,19 @@ class CRM_Contributionbatchhelper_Form_Task_AddToBatch extends CRM_Contribute_Fo
   }
 
   public function postProcess() {
+    $session = CRM_Core_Session::singleton();
     $values = $this->exportValues();
-    $options = $this->getColorOptions();
-    CRM_Core_Session::setStatus(ts('You picked color "%1"', array(
-      1 => $options[$values['favorite_color']]
-    )));
-    parent::postProcess();
+    if (empty($values['contribution_batch_id'])) {
+      $batch_id = CRM_Contributionbatchhelper_Helper::createBatch(
+        $values['batch_name'],
+        $session->get('userID'));
+    }
+    else {
+      $batch_id = $values['contribution_batch_id'];
+    }
+    // TODO: add contributions to batch.
+    $session->replaceUserContext(CRM_Utils_System::url('civicrm/batchtransaction',
+        "reset=1&bid={$batch_id}"));
   }
 
   public function getColorOptions() {
