@@ -1,6 +1,6 @@
 <?php
 /*
-  be.chiro.civi.contributionbatchhelper - easy contribution batch creation.
+  be.chiro.civi.contributionbatchhelper - contribution batch tools.
   Copyright (C) 2016  Chirojeugd-Vlaanderen vzw
 
   This program is free software: you can redistribute it and/or modify
@@ -84,6 +84,10 @@ class CRM_Contributionbatchhelper_Helper {
       'ok' => array(),
       'error' => array(),
     );
+    // Contributions that are already in some batch, cannot be added again.
+    $result['error'] = self::findIdsBatchedContributions($contributionIDs);
+    $contributionIDs = array_diff($contributionIDs, $result['error']);
+    
     $batchPID = CRM_Core_DAO::getFieldValue('CRM_Batch_DAO_Batch', $batchID, 'payment_instrument_id');
     foreach ($contributionIDs as $contributionID) {
       $recordPID = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_FinancialTrxn', $contributionID, 'payment_instrument_id');
@@ -103,5 +107,20 @@ class CRM_Contributionbatchhelper_Helper {
       }
     }
     return $result;
+  }
+
+  /**
+   * Returns contribution IDs of contributions already part of a batch.
+   * 
+   * @param array $contributionIDs
+   * @return array
+   */
+  private static function findIdsBatchedContributions(array $contributionIDs) {
+    $result = civicrm_api3('BatchedContribution', 'get', array(
+      'id' => array('IN' => $contributionIDs),
+      'sequential' => 0,
+      'return' => 'id',
+    ));
+    return array_keys($result['values']);
   }
 }
