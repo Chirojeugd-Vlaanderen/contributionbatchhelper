@@ -60,30 +60,29 @@ class CRM_Contributionbatchhelper_Form_Task_AddToBatch extends CRM_Contribute_Fo
     $session = CRM_Core_Session::singleton();
     $values = $this->exportValues();
     if (empty($values['contribution_batch_id'])) {
-      $batch_id = CRM_Contributionbatchhelper_Helper::createBatch(
+      $batchID = CRM_Contributionbatchhelper_Helper::createBatch(
         $values['batch_name'],
         $session->get('userID'));
     }
     else {
-      $batch_id = $values['contribution_batch_id'];
+      $batchID = $values['contribution_batch_id'];
     }
-    // TODO: add contributions to batch.
-    $session->replaceUserContext(CRM_Utils_System::url('civicrm/batchtransaction',
-        "reset=1&bid={$batch_id}"));
-  }
+    $result = CRM_Contributionbatchhelper_Helper::addToBatch($batchID, $this->_contributionIds);
+    if (count($result['ok']) > 1) {
+      CRM_Core_Session::setStatus(ts('%1 contributions were added to batch %2.', array(
+        1 => count($result['ok']),
+        2 => $batchID,
+      ), 'Success', 'success'));
+    }
+    if (count($result['error']) > 1) {
+      CRM_Core_Session::setStatus(ts('%1 contributions were not added to batch %2.', array(
+        1 => count($result['error']),
+        2 => $batchID,
+      ), 'Error', 'error'));
+    }
 
-  public function getColorOptions() {
-    $options = array(
-      '' => ts('- select -'),
-      '#f00' => ts('Red'),
-      '#0f0' => ts('Green'),
-      '#00f' => ts('Blue'),
-      '#f0f' => ts('Purple'),
-    );
-    foreach (array('1','2','3','4','5','6','7','8','9','a','b','c','d','e') as $f) {
-      $options["#{$f}{$f}{$f}"] = ts('Grey (%1)', array(1 => $f));
-    }
-    return $options;
+    $session->replaceUserContext(CRM_Utils_System::url('civicrm/batchtransaction',
+        "reset=1&bid={$batchID}"));
   }
 
   /**

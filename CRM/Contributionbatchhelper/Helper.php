@@ -20,18 +20,22 @@
 /**
  * Static helper functions.
  *
- * @author johanv
+ * This kind of functions should really be part of CiviCRM core. But they
+ * are not. Yet?
  */
 class CRM_Contributionbatchhelper_Helper {
   /**
    * Creates a batch and records an activity.
+   *
+   * This is more or less copied from
+   * CRM_financial_Form_FinancialBatch::postProcess(). IMO this kind of
+   * functionality should be part of Core.
    *
    * @param string $title
    * @param int $userID
    * @returns int ID of created batch
    */
   public static function createBatch($title, $userID) {
-    // This is more or less copied from CRM_financial_Form_FinancialBatch::postProcess()
     $batchMode = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'mode_id', array('labelColumn' => 'name'));
     $batchStatus = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'status_id');
     $activityTypes = CRM_Core_PseudoConstant::activityType(TRUE, FALSE, FALSE, 'name');
@@ -62,5 +66,42 @@ class CRM_Contributionbatchhelper_Helper {
     CRM_Activity_BAO_Activity::create($activityParams);
 
     return $batch->id;
+  }
+
+  /**
+   * Add contributions with givien IDs to batch with given ID.
+   *
+   * This is based on the bulkAssignRemove function in
+   * CRM/Financial/Page/AJAX.php. In my opinion, this kind of functionality
+   * should be part of Core.
+   *
+   * @param int $batchID
+   * @param array $contributionIDs
+   * @returns array Information about which contributions are added
+   */
+  public static function addToBatch($batchID, array $contributionIDs) {
+    $result = array(
+      'ok' => array(),
+      'error' => array(),
+    );
+    $batchPID = CRM_Core_DAO::getFieldValue('CRM_Batch_DAO_Batch', $batchID, 'payment_instrument_id');
+    foreach ($contributionIDs as $contributionID) {
+      $recordPID = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_FinancialTrxn', $contributionID, 'payment_instrument_id');
+      if ($recordPID == $batchPID || !isset($batchPID)) {
+        $params = array(
+          'entity_id' => $contributionID,
+          'entity_table' => 'civicrm_financial_trxn',
+          'batch_id' => $batchID,
+        );
+        $updated = CRM_Batch_BAO_Batch::addBatchEntity($params);
+        if ($updated) {
+          $result['ok'][] = $contributionID;
+        }
+        else {
+          $result['error'][] = $contributionID;
+        }
+      }
+    }
+    return $result;
   }
 }
