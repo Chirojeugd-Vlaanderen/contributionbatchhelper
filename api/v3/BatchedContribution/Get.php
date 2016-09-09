@@ -27,18 +27,24 @@
  * @throws API_Exception
  */
 function civicrm_api3_batched_contribution_Get(array $params) {
-  $sql = "SELECT eb.batch_id, cont.*
-      FROM civicrm_entity_batch eb
-      JOIN civicrm_financial_trxn ft ON (eb.entity_id = ft.id AND eb.entity_table = 'civicrm_financial_trxn')
+  $sql = "SELECT eb.batch_id, eft.financial_trxn_id, cont.*
+      FROM civicrm_financial_trxn ft
       JOIN civicrm_entity_financial_trxn eft ON (eft.financial_trxn_id = ft.id AND eft.entity_table = 'civicrm_contribution')
-      JOIN civicrm_contribution cont ON cont.id = eft.entity_id";
+      JOIN civicrm_contribution cont ON cont.id = eft.entity_id
+      LEFT OUTER JOIN civicrm_entity_batch eb ON (eb.entity_id = ft.id AND eb.entity_table = 'civicrm_financial_trxn')
+  ";
 
   $extraFields = array(
     'batch_id' => array(
       'name' => 'batch_id',
       'type' => 1,
       'title' => 'Batch ID',
-    )
+    ),
+    'financial_trxn_id' => array(
+      'name' => 'financial_trxn_id',
+      'type' => 1,
+      'title' => 'Financial transaction ID',
+    ),
   );
 
   $result = CRM_Queryapitools_Tools::BasicGet(

@@ -79,48 +79,45 @@ class CRM_Contributionbatchhelper_Helper {
    * @param array $contributionIDs
    * @returns array Information about which contributions are added
    */
-  public static function addToBatch($batchID, array $contributionIDs) {
+  public static function addContributionsToBatch($batchID, array $contributionIDs) {
     $result = array(
       'ok' => array(),
       'error' => array(),
     );
-    // Contributions that are already in some batch, cannot be added again.
-    $result['error'] = self::findIdsBatchedContributions($contributionIDs);
-    $contributionIDs = array_diff($contributionIDs, $result['error']);
-    
+
+    $api_result = civicrm_api3('BatchedContribution', 'get', array(
+      // find contributions with given IDs
+      'id' => array('IN' => $contributionIDs),
+      // that are not contained in any batch
+      'batch_id' => array('IS NULL' => 1),
+      'return' => array("id", "financial_trxn_id", "batch_id"),
+      'sequential' => 0,
+    ));
+
+    // The contribution ID's that are not contained in the api result, are
+    // those that are already contained in some other batch.
+    // Because we called the API with sequential => 0, we can use the trick
+    // below.
+    $result['error'] = array_diff($contributionIDs, array_keys($api_result['values']));
+
     $batchPID = CRM_Core_DAO::getFieldValue('CRM_Batch_DAO_Batch', $batchID, 'payment_instrument_id');
-    foreach ($contributionIDs as $contributionID) {
-      $recordPID = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_FinancialTrxn', $contributionID, 'payment_instrument_id');
+    foreach ($api_result['values'] as $contribution) {
+      $recordPID = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_FinancialTrxn', $contribution['financial_trxn_id'], 'payment_instrument_id');
       if ($recordPID == $batchPID || !isset($batchPID)) {
         $params = array(
-          'entity_id' => $contributionID,
+          'entity_id' => $contribution['financial_trxn_id'],
           'entity_table' => 'civicrm_financial_trxn',
           'batch_id' => $batchID,
         );
         $updated = CRM_Batch_BAO_Batch::addBatchEntity($params);
         if ($updated) {
-          $result['ok'][] = $contributionID;
+          $result['ok'][] = $contribution['id'];
         }
         else {
-          $result['error'][] = $contributionID;
+          $result['error'][] = $contribution['id'];
         }
       }
     }
     return $result;
-  }
-
-  /**
-   * Returns contribution IDs of contributions already part of a batch.
-   * 
-   * @param array $contributionIDs
-   * @return array
-   */
-  private static function findIdsBatchedContributions(array $contributionIDs) {
-    $result = civicrm_api3('BatchedContribution', 'get', array(
-      'id' => array('IN' => $contributionIDs),
-      'sequential' => 0,
-      'return' => 'id',
-    ));
-    return array_keys($result['values']);
   }
 }

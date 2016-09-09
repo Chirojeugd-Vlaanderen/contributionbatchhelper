@@ -67,7 +67,7 @@ class CRM_Contributionbatchhelper_Form_Task_AddToBatch extends CRM_Contribute_Fo
     else {
       $batchID = $values['contribution_batch_id'];
     }
-    $result = CRM_Contributionbatchhelper_Helper::addToBatch($batchID, $this->_contributionIds);
+    $result = CRM_Contributionbatchhelper_Helper::addContributionsToBatch($batchID, $this->_contributionIds);
     if (count($result['ok']) > 1) {
       CRM_Core_Session::setStatus(ts('%1 contributions were added to batch %2.', array(
         1 => count($result['ok']),
