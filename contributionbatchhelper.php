@@ -178,7 +178,11 @@ function contributionbatchhelper_civicrm_navigationMenu(&$menu) {
  * @param array $tasks
  */
 function contributionbatchhelper_civicrm_searchTasks($objectType, &$tasks) {
-  if ($objectType == 'contribution') {
+  $perms = array(
+    'create manual batch',
+    'edit own manual batches',
+  );
+  if ($objectType == 'contribution' && CRM_Core_Permission::check($perms)) {
     // Add task for Membership facturatie and lidkaarten
     $tasks['batch'] = array(
       'title' => ts('Add to export batch'),
