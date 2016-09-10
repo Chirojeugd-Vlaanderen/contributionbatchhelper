@@ -91,6 +91,7 @@ class CRM_Contributionbatchhelper_Helper {
       // that are not contained in any batch
       'batch_id' => array('IS NULL' => 1),
       'return' => array("id", "financial_trxn_id", "batch_id"),
+      'options' => array('limit' => count($contributionIDs)),
       'sequential' => 0,
     ));
 
