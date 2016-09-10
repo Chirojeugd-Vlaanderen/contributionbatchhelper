@@ -8,8 +8,8 @@ find useful for our CiviCRM instance.
   existing financial batch. If you want to use this, you might want to
   patch CiviCRM, so that you can
   [search for contributions that are not yet contained in any batch](https://issues.civicrm.org/jira/browse/CRM-19325).
-* It provides an api action @BatchedContribution.get@, that does the same
-  as @Contribution.get@, but also returns the ID of the batch the contribution
+* It provides an api action `BatchedContribution.get`, that does the same
+  as `Contribution.get`, but also returns the ID of the batch the contribution
   is contained in (if any). It allows filtering on batch ID as well.
 
 ## dependencies
@@ -17,7 +17,7 @@ find useful for our CiviCRM instance.
 If you want to use this extension, you need to install
 [queryapitools](https://www.civicrm.org/extensions/queryapitools) as well.
 
-## API examples
+## API example
 
 The example below returns the requested fields for all contributions in
 financial batch 22.
