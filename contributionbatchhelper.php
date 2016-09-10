@@ -191,3 +191,19 @@ function contributionbatchhelper_civicrm_searchTasks($objectType, &$tasks) {
     );
   }
 }
+
+/**
+ * Implements hook_civicrm_alterAPIPermissions.
+ *
+ * @param string $entity
+ * @param string $action
+ * @param array $params
+ * @param array $permissions
+ */
+function contributionbatchhelper_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
+  $permissions['batched_contribution']['get'] = array(
+    'access CiviCRM',
+    'access CiviContribute',
+    'view all manual batches',
+    );
+}
