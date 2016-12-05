@@ -36,7 +36,7 @@ class CRM_Contributionbatchhelper_Helper {
    * @returns int ID of created batch
    */
   public static function createBatch($title, $userID) {
-    $batchMode = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'mode_id', array('labelColumn' => 'name'));
+    $batchMode = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'mode_id', ['labelColumn' => 'name']);
     $batchStatus = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'status_id');
     $activityTypes = CRM_Core_PseudoConstant::activityType(TRUE, FALSE, FALSE, 'name');
 
@@ -52,7 +52,7 @@ class CRM_Contributionbatchhelper_Helper {
     $batch = CRM_Batch_BAO_Batch::create($params);
 
     // create activity.
-    $activityParams = array(
+    $activityParams = [
       'activity_type_id' => array_search('Create Batch', $activityTypes),
       'subject' => $batch->title . "- Batch",
       'status_id' => 2,
@@ -61,7 +61,7 @@ class CRM_Contributionbatchhelper_Helper {
       'source_contact_id' => $userID,
       'source_contact_qid' => $userID,
       'details' => "{$title} batch has been created by this contact.",
-    );
+    ];
 
     CRM_Activity_BAO_Activity::create($activityParams);
 
@@ -85,14 +85,14 @@ class CRM_Contributionbatchhelper_Helper {
       'error' => array(),
     );
 
-    $api_result = civicrm_api3('BatchedContribution', 'get', array(
+    $api_result = civicrm_api3('BatchedContribution', 'get', [
       // find contributions with given IDs
-      'id' => array('IN' => $contributionIDs),
+      'id' => ['IN' => $contributionIDs],
       // that are not contained in any batch
-      'batch_id' => array('IS NULL' => 1),
-      'return' => array("id", "financial_trxn_id", "batch_id"),
+      'batch_id' => ['IS NULL' => 1],
+      'return' => ["id", "financial_trxn_id", "batch_id"],
       'sequential' => 0,
-    ));
+    ]);
 
     // The contribution ID's that are not contained in the api result, are
     // those that are already contained in some other batch.
