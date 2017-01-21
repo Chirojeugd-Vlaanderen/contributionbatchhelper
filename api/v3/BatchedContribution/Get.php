@@ -1,7 +1,7 @@
 <?php
 /*
   be.chiro.civi.contributionbatchhelper - contribution batch tools.
-  Copyright (C) 2016  Chirojeugd-Vlaanderen vzw
+  Copyright (C) 2016, 2017  Chirojeugd-Vlaanderen vzw
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
@@ -50,7 +50,7 @@ function civicrm_api3_batched_contribution_Get(array $params) {
   $result = CRM_Queryapitools_Tools::BasicGet(
     $sql,
     $params,
-    'CRM_Contribute_BAO_Contribution',
+    'Contribution',
     $extraFields);
 
   return $result;

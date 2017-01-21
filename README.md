@@ -17,6 +17,13 @@ find useful for our CiviCRM instance.
 If you want to use this extension, you need to install
 [queryapitools](https://www.civicrm.org/extensions/queryapitools) as well.
 
+## Compatibility warning!
+
+In CiviCRM 4.7.13 or CiviCRM 4.7.14, something changed in the CiviCRM API,
+which broke version 0.1-alpha1 of the queryapitools extensions.
+This version of contributionbatchhelper works with queryapitools 1.0-alpha1,
+and it shoud therefore work with CiviCRM 4.7.15 and (hopefully) later.
+
 ## API example
 
 The example below returns the requested fields for all contributions in
