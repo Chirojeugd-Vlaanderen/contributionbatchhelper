@@ -22,7 +22,7 @@ If you want to use this extension, you need to install
 In CiviCRM 4.7.13 or CiviCRM 4.7.14, something changed in the CiviCRM API,
 which broke version 0.1-alpha1 of the queryapitools extensions.
 This version of contributionbatchhelper works with queryapitools 1.0-alpha1,
-and it shoud therefore work with CiviCRM 4.7.15 and (hopefully) later.
+and it shoud therefore work with CiviCRM **4.7.15** and (hopefully) later.
 
 ## API example
 
