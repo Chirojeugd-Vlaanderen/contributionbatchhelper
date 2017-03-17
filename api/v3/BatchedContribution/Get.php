@@ -34,18 +34,18 @@ function civicrm_api3_batched_contribution_Get(array $params) {
       LEFT OUTER JOIN civicrm_entity_batch eb ON (eb.entity_id = ft.id AND eb.entity_table = 'civicrm_financial_trxn')
   ";
 
-  $extraFields = array(
-    'batch_id' => array(
+  $extraFields = [
+    'batch_id' => [
       'name' => 'batch_id',
       'type' => 1,
       'title' => 'Batch ID',
-    ),
-    'financial_trxn_id' => array(
+    ],
+    'financial_trxn_id' => [
       'name' => 'financial_trxn_id',
       'type' => 1,
       'title' => 'Financial transaction ID',
-    ),
-  );
+    ],
+  ];
 
   $result = CRM_Queryapitools_Tools::BasicGet(
     $sql,

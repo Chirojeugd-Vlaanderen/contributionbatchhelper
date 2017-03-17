@@ -184,11 +184,11 @@ function contributionbatchhelper_civicrm_searchTasks($objectType, &$tasks) {
   );
   if ($objectType == 'contribution' && CRM_Core_Permission::check($perms)) {
     // Add task for Membership facturatie and lidkaarten
-    $tasks['batch'] = array(
+    $tasks['batch'] = [
       'title' => ts('Add to export batch'),
       'class' => 'CRM_Contributionbatchhelper_Form_Task_AddToBatch',
       'result' => FALSE,
-    );
+    ];
   }
 }
 
