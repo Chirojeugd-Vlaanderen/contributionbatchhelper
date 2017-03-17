@@ -91,6 +91,8 @@ class CRM_Contributionbatchhelper_Helper {
       // that are not contained in any batch
       'batch_id' => ['IS NULL' => 1],
       'return' => ["id", "financial_trxn_id", "batch_id"],
+      'options' => ['limit' => count($contributionIDs)],
+
       'sequential' => 0,
     ]);
 
@@ -109,6 +111,7 @@ class CRM_Contributionbatchhelper_Helper {
           'entity_table' => 'civicrm_financial_trxn',
           'batch_id' => $batchID,
         );
+        // I hope the below does al the necessary permission checks.
         $updated = CRM_Batch_BAO_Batch::addBatchEntity($params);
         if ($updated) {
           $result['ok'][] = $contribution['id'];

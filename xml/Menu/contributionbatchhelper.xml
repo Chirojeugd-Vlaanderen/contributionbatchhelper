@@ -4,6 +4,6 @@
     <path>civicrm/contribute/addtobatch</path>
     <page_callback>CRM_Contributionbatchhelper_Form_Task_AddToBatch</page_callback>
     <title>AddToBatch</title>
-    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>access CiviCRM,create manual batch,edit own manual batches</access_arguments>
   </item>
 </menu>
